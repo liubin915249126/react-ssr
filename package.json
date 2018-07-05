@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set NODE_ENV=development && webpack-dev-server --hot --inline --progress --colors --watch --open",
     "server": "node server/index.js",
-    "build": "set NODE_ENV=production && webpack"
+    "build": "set NODE_ENV=production && webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -35,11 +35,15 @@
     "koa-webpack-dev-middleware": "1.4.6",
     "koa-webpack-hot-middleware": "^1.0.1",
     "react-dev-utils": "^5.0.1",
+    "webpack-dev-middleware": "^1.11.0",
+    "webpack-hot-middleware": "^2.18.2",
     "webpack": "^4.15.0",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "koa-static": "^4.0.1"
   },
   "dependencies": {
     "babel-register": "^6.26.0",
+    "express": "^4.16.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-router": "^4.3.1",

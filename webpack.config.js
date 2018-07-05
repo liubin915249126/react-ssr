@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDebug = process.env.NODE_ENV === 'development'
 
-
+const hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
 //入口文件
 let entry = {
 };
@@ -17,7 +17,7 @@ let plugins = [];
 pages.forEach((page,index)=>{
 
 
-entry[page] = index===0 ? [`${__dirname}/pages/${page}.js`, 'eventsource-polyfill','webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000']:`${__dirname}/pages/${page}.js`,  
+entry[page] = [ `${__dirname}/pages/${page}.js`,hotMiddlewareScript],  
 
 
   plugins[index] =  new HtmlWebpackPlugin({
@@ -36,7 +36,7 @@ let browserConfig = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
-        publicPath: 'build',
+        publicPath: '',
         chunkFilename: "js/[id].bundle.js"
     },
     module: {
