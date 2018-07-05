@@ -1,26 +1,32 @@
+const pages = require('./server/readfile.js');
 const webpack = require('webpack')
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const pages = require('./server/readfile.js');
+
 
 const isDebug = process.env.NODE_ENV === 'development'
 
 
 //入口文件
-let entry = {};
+let entry = {
+};
 // htmlplugin
 let plugins = [];
 
 pages.forEach((page,index)=>{
-  entry[page] = `${__dirname}/pages/${page}.js`,
+
+
+entry[page] = index===0 ? [`${__dirname}/pages/${page}.js`, 'eventsource-polyfill','webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000']:`${__dirname}/pages/${page}.js`,  
+
+
   plugins[index] =  new HtmlWebpackPlugin({
-    title:'react 学习',
-    inject:'body',
-    chunks: [page],
-    filename: `${page}.html`,
-    template:path.resolve(__dirname, "index.html")
-})
+        title:'react 学习',
+        inject:'body',
+        chunks: [page],
+        filename: `${page}.html`,
+        template:path.resolve(__dirname, "index.html")
+    })
 })
 
 //浏览器端的配置
@@ -30,15 +36,25 @@ let browserConfig = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
+        publicPath: 'build',
         chunkFilename: "js/[id].bundle.js"
     },
     module: {
         rules: [
             {
                 test: /\.js?$/,
-                exclude: /node_modules/,
-                use: ['babel-loader'],
-            }
+                loader: 'babel-loader',
+                // options: {
+                //     query:{
+                //         // 'presets': [['env'], ['stage-0'], ['react']],
+                //         'env': {
+                //           'development': {
+                //             'presets': ['react-hmre']
+                //           }
+                //         }
+                //       }
+                // },
+              }
         ]
     },
     devServer: {
@@ -50,9 +66,13 @@ let browserConfig = {
         }
     },
     plugins:[
-        ...plugins
+        ...plugins,
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        // new webpack.NoErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
     ]
 };
 
 
-module.exports = [browserConfig];
+module.exports = browserConfig;

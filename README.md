@@ -60,5 +60,9 @@
 ```bash
    npm install react react-dom react-router react-router-dom  --save 
 ```
+#### 热加载
+```bash
+   npm install koa-webpack-dev-middleware koa-webpack-hot-middleware --save-dev
+```
 
 config.optimization.splitChunks

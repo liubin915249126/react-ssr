@@ -9,8 +9,6 @@ const render = {};
 
 pages.forEach((page,index)=>{
   const Component = require(`../pages/${page}.js`)
-  console.log(page);
-  console.log(Component)
   render[`render${index}`] = async(ctx,next)=>{
     const html = ReactDOMServer.renderToString(
       <Component.default />

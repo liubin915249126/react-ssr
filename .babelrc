@@ -1,12 +1,19 @@
 
   {
     "presets": [
-      "react",
+      "react", "stage-0" ,
       ["env", {
         "targets": {
           "node": "current"
         }
-      }]
+      }],
+     [
+      "env",{
+        "development": {
+          "presets": ["react-hmre"]
+        }
+      }
+     ]
     ]
   }
   
