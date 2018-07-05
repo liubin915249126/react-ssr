@@ -10,6 +10,11 @@ const render = require('../server/render');
 
 const path = require('path');
 const serve = require('koa-static');
+const staticCache  = require("koa-static-cache");
+const bodyparser = require('koa-bodyparser')
+
+const koaWebpack = require('koa-webpack');
+const webpackMiddleware = require("webpack-koa2-middleware");
 
 const openBrowser = require('react-dev-utils/openBrowser');
 
@@ -22,6 +27,8 @@ const compiler = webpack(config);
 const webpackDev  = require('webpack-dev-middleware')
 const webpackHot = require('webpack-hot-middleware')
 const PassThrough = require('stream').PassThrough;
+
+const {layout1} =require ('./layout.js');
 
 const hotMiddleware = (compiler, opts) => {
     const middleware = webpackHot(compiler, opts);
@@ -60,18 +67,61 @@ const devMiddleware = (compiler, opts) => {
 
 console.log(pages);
 pages.forEach((page,index)=>{
-    router.get(`/${page}`, render[`render${index}`],(err)=>{
+    router.get(`/${page}`, render[`render${page}`],(err)=>{
        console.log(err)
     });
     
  })
 
- app.use(devMiddleware(compiler));
- app.use(hotMiddleware(compiler),{
-  // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
- });
+ app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
-app.use(serve(path.resolve("./", "build"), {extensions: ['html']}));
+//  koaWebpack({ config })
+//  .then((middleware) => {
+//   app.use(middleware,{ serverSideRender: true });
+// });
+//  app.use(devMiddleware(compiler));
+// app.use(require("webpack-dev-middleware")(compiler, {
+//   noInfo: true, publicPath: config.output.publicPath
+// }));
+//  app.use(require("webpack-hot-middleware")(compiler));
+//  app.use(hotMiddleware(compiler),{
+//   // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+//  });
+
+ app.use(bodyparser({
+  enableTypes: ['json', 'form', 'text']
+}))
+
+app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
+app.use(staticCache (path.resolve(__dirname,'build'),{
+  maxAge: 365 * 24 * 60 * 60,
+  gzip:true
+}));
+
+app.use(async (ctx, next) => {
+  // console.log(ctx.state);
+  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
+  console.log(assetsByChunkName);
+ 
+  for(page in assetsByChunkName){
+  //   router.get(`/${page}`, render[`render${page}`],(err)=>{
+  //     console.log(err)
+  //  });
+  ctx.set('Content-Type', 'text/html; charset=utf-8');
+  // ctx.body = layout1(page,assetsByChunkName[page])
+  ctx.body = `
+<html>
+  <head>
+    <title>My App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+		<script src="${render[`render${page}`](ctx,next)}"></script>		
+  </body>
+</html>		
+	`;
+  }
+})
 
 app
     .use(router.routes())

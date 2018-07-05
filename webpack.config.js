@@ -36,7 +36,7 @@ let browserConfig = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
-        publicPath: '',
+        publicPath: ' ',
         chunkFilename: "js/[id].bundle.js"
     },
     module: {
@@ -66,7 +66,7 @@ let browserConfig = {
         }
     },
     plugins:[
-        ...plugins,
+        // ...plugins,
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         // new webpack.NoErrorsPlugin(),
