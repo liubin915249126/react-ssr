@@ -9,8 +9,9 @@ const isDebug = process.env.NODE_ENV === 'development'
 
 //入口文件
 let entry = {};
+// htmlplugin
 let plugins = [];
-console.log(pages)
+
 pages.forEach((page,index)=>{
   entry[page] = `${__dirname}/pages/${page}.js`,
   plugins[index] =  new HtmlWebpackPlugin({

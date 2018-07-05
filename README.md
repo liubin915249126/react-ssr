@@ -56,5 +56,9 @@
 ```
    npm install webpack-dev-server --save-dev  
 ```
+#### 安装react
+```bash
+   npm install react react-dom react-router react-router-dom  --save 
+```
 
 config.optimization.splitChunks
