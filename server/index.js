@@ -36,14 +36,14 @@ pages.forEach((page,index)=>{
 //        console.log(error) 
 //     }) 
 //  })
-app.use(async (context, next) => {
-    const middleware = webpackDevMiddleware(compiler,{});
-    const hasNext = await applyMiddleware(middleware, context.req, {
-      send: content => context.body = content,
-      setHeader: function() {context.set.apply(context, arguments)}
-    });
-    hasNext && await next();
-  })
+// app.use(async (context, next) => {
+//     const middleware = webpackDevMiddleware(compiler,{});
+//     const hasNext = await applyMiddleware(middleware, context.req, {
+//       send: content => context.body = content,
+//       setHeader: function() {context.set.apply(context, arguments)}
+//     });
+//     hasNext && await next();
+//   })
 
 
 //  app.use((context, next)=>{
