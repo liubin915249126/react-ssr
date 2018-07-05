@@ -14,9 +14,46 @@ const webpackHotMiddleware = require('koa-webpack-hot-middleware');
 const config = require('../webpack.config')
 const compiler = webpack(config);
 
+// const webpackDev  = require('webpack-dev-middleware');
+// const webpackHot = require('webpack-hot-middleware')
+const PassThrough = require('stream').PassThrough;
 
+const devMiddleware = (compiler, opts) => {
+    const middleware = webpackDevMiddleware(compiler, opts);
+    return async (ctx, next) => {
+      await middleware(ctx.req, {
+        end: (content) => {
+          ctx.body = content;
+        },
+        setHeader: (name, value) => {
+          ctx.set(name, value);
+        }
+      }, next);
+    };
+  };
+
+
+const hotMiddleware = (compiler, opts) => {
+  const middleware = webpackHotMiddleware(compiler, opts);
+  return async (ctx, next) => {
+    let stream = new PassThrough();
+    ctx.body = stream;
+    await middleware(ctx.req, {
+        write: stream.write.bind(stream),
+        writeHead: (status, headers) => {
+          ctx.status = status;
+          ctx.set(headers);
+        }
+      }, next);
+  };
+};
 
 // import pages from '../server/readfile';
+
+app.use(devMiddleware(compiler, {
+    publicPath: config.output.publicPath // '/'
+  }));
+app.use(hotMiddleware(compiler));
 
 console.log(pages);
 pages.forEach((page,index)=>{
@@ -36,14 +73,14 @@ pages.forEach((page,index)=>{
 //        console.log(error) 
 //     }) 
 //  })
-app.use(async (context, next) => {
-    const middleware = webpackDevMiddleware(compiler,{});
-    const hasNext = await applyMiddleware(middleware, context.req, {
-      send: content => context.body = content,
-      setHeader: function() {context.set.apply(context, arguments)}
-    });
-    hasNext && await next();
-  })
+// app.use(async (context, next) => {
+//     const middleware = webpackDevMiddleware(compiler,{});
+//     const hasNext = await applyMiddleware(middleware, context.req, {
+//       send: content => context.body = content,
+//       setHeader: function() {context.set.apply(context, arguments)}
+//     });
+//     hasNext && await next();
+//   })
 
 
 //  app.use((context, next)=>{
@@ -66,6 +103,7 @@ function applyMiddleware(middleware, req, res) {
     });
   }
 
+  
 app
     .use(router.routes())
     .use(router.allowedMethods());
