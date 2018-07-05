@@ -2,10 +2,10 @@
 
 #### npm init 
 
-#### 安装webpack
+#### 安装webpack webpack-cli
 ```bash
    npm install -g webpack
-   npm install webpack ---save-dev
+   npm install webpack webpack-cli --save-dev
 ```
 
 #### 新建webpack.config.js
@@ -48,3 +48,13 @@
    npm install --save-dev babel-preset-env babel-preset-react 
 ```
 #### 启用async
+#### 加载html模版
+```bash
+   npm install html-webpack-plugin --save-dev
+```
+#### 安装webpack-dev-server
+```
+   npm install webpack-dev-server --save-dev  
+```
+
+config.optimization.splitChunks
