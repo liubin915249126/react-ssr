@@ -8,6 +8,7 @@ const render = require('../server/render');
 
 const openBrowser = require('react-dev-utils/openBrowser');
 
+const middleware = require('koa-webpack');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('koa-webpack-dev-middleware');
 const webpackHotMiddleware = require('koa-webpack-hot-middleware');
@@ -50,11 +51,10 @@ const hotMiddleware = (compiler, opts) => {
 
 // import pages from '../server/readfile';
 
-app.use(devMiddleware(compiler, {
-    publicPath: config.output.publicPath // '/'
-  }));
-app.use(hotMiddleware(compiler));
-
+app.use(middleware({
+    compiler: compiler
+}));
+ 
 console.log(pages);
 pages.forEach((page,index)=>{
     router.get(`/${page}`, render[`render${index}`],(err)=>{
