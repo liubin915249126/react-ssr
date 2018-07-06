@@ -18,7 +18,7 @@ let plugins = [];
 pages.forEach((page,index)=>{
 
 
-entry[page] = [ `${__dirname}/pages/${page}.js`,hotMiddlewareScript],  
+entry[page] = [ `${__dirname}/pages/${page}.js`],  
 
 
   plugins[index] =  new HtmlWebpackPlugin({

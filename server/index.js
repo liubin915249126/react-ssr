@@ -20,12 +20,12 @@ const openBrowser = require('react-dev-utils/openBrowser');
 
 const webpack = require('webpack');
 // const webpackDev = require('koa-webpack-dev-middleware');
-// const webpackHot = require('koa-webpack-hot-middleware');
+const webpackHot = require('koa-webpack-hot-middleware');
 const config = require('../webpack.config')
 const compiler = webpack(config);
 
 const webpackDev  = require('webpack-dev-middleware')
-const webpackHot = require('webpack-hot-middleware')
+// const webpackHot = require('webpack-hot-middleware')
 const PassThrough = require('stream').PassThrough;
 
 const {layout1} =require ('./layout.js');
@@ -76,6 +76,11 @@ const devMiddleware = (compiler, opts) => {
 }
 
 
+// app.use(require("webpack-dev-middleware")(compiler, {
+//     noInfo: true, publicPath: config.output.publicPath,serverSideRender:true
+// }));
+
+
 
 //  app.use(webpackMiddleware(compiler, { serverSideRender: true , lazy:false,watchOptions: {
 //   aggregateTimeout: 300,
@@ -90,49 +95,54 @@ const devMiddleware = (compiler, opts) => {
 //  .then((middleware) => {
 //   app.use(middleware,{ serverSideRender: true });
 // });
-//  app.use(devMiddleware(compiler,{
-//   noInfo: true,
-//         watchOptions: {
-//             aggregateTimeout: 300,
-//             poll: true
-//         },
-//         publicPath: '/build/',
-//         stats: {
-//             colors: true
-//         },
-//         serverSideRender: true 
-// }));
-
+ app.use(devMiddleware(compiler,{
+  noInfo: true,
+        watchOptions: {
+            aggregateTimeout: 300,
+            poll: true
+        },
+        publicPath: '/build/',
+        stats: {
+            colors: true
+        },
+        serverSideRender: true 
+}));
+// app.use(require("koa-webpack-hot-middleware")(compiler));
 
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
-//  app.use(require("webpack-hot-middleware")(compiler));
-//  app.use(hotMiddleware(compiler,{
-//   log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-//  }));
+ 
+// app.use(require("webpack-hot-middleware")(compiler,{
+//     log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+// }));
 
-app.use(
-  devMiddleware(compiler, {
-      noInfo: true,
-      watchOptions: {
-          aggregateTimeout: 300,
-          poll: true
-      },
-      publicPath: ' ',
-      stats: {
-          colors: true
-      },
-      serverSideRender: true 
-  })
-);
-app.use(
-  hotMiddleware(compiler, {
-      log: console.log,
-      path: '/__webpack_hmr',
-      heartbeat: 10 * 1000
-  })
-);
+
+ app.use(hotMiddleware(compiler,{
+  log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+ }));
+
+// app.use(
+//   devMiddleware(compiler, {
+//       noInfo: true,
+//       watchOptions: {
+//           aggregateTimeout: 300,
+//           poll: true
+//       },
+//       publicPath: ' ',
+//       stats: {
+//           colors: true
+//       },
+//       serverSideRender: true 
+//   })
+// );
+// app.use(
+//   hotMiddleware(compiler, {
+//       log: console.log,
+//       path: '/__webpack_hmr',
+//       heartbeat: 10 * 1000
+//   })
+// );
 
 
 app.use(bodyparser({
@@ -184,7 +194,7 @@ app
 
 app.listen(3005,()=>{
     console.log('server is start at port 3005');
-    openBrowser("http://localhost:3005/index1")
+    openBrowser("http://localhost:3005/index4")
 });
 
 // app.on('request',(req,res)=>{
