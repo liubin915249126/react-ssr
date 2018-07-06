@@ -8,7 +8,7 @@ const TimeFixPlugin = require('time-fix-plugin');
 
 const isDebug = process.env.NODE_ENV === 'development'
 
-const hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
+const hotMiddlewareScript = 'webpack-hot-middleware/client?timeout=20000&reload=true';
 //入口文件
 let entry = {
 };

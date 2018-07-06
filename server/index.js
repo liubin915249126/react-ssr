@@ -59,14 +59,15 @@ const devMiddleware = (compiler, opts) => {
               console.log(content)
                 ctx.body = content
             },
-            send: (content)=>{
-              ctx.body = content
-              console.log(content);
-            },
-            done: (content)=>{
-              ctx.body = content
-              console.log(content);
-            },
+            locals:ctx.state,
+            // send: (content)=>{
+            //   ctx.body = content
+            //   console.log(content);
+            // },
+            // done: (content)=>{
+            //   ctx.body = content
+            //   console.log(content);
+            // },
             setHeader: (name, value) => {
                 ctx.set(name, value)
             }
