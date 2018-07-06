@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TimeFixPlugin = require('time-fix-plugin');
 
 
 const isDebug = process.env.NODE_ENV === 'development'
@@ -67,6 +68,7 @@ let browserConfig = {
     },
     plugins:[
         // ...plugins,
+        new TimeFixPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         // new webpack.NoErrorsPlugin(),

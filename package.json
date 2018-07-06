@@ -40,6 +40,7 @@
     "koa-webpack-hot-middleware": "^1.0.1",
     "react-dev-utils": "^5.0.1",
     "react-router-config": "^1.0.0-beta.4",
+    "time-fix-plugin": "^2.0.3",
     "webpack": "^4.15.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-middleware": "^1.11.0",

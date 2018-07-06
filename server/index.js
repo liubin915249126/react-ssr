@@ -73,7 +73,10 @@ pages.forEach((page,index)=>{
     
  })
 
- app.use(webpackMiddleware(compiler, { serverSideRender: true }));
+ app.use(webpackMiddleware(compiler, { serverSideRender: true , lazy:false,watchOptions: {
+  aggregateTimeout: 300,
+  poll: 1000
+},watch:true}));
 
 //  koaWebpack({ config,hotClient: { hmr: true, reload: true },devMiddleware: {
 //   stats: 'minimal',
@@ -83,14 +86,14 @@ pages.forEach((page,index)=>{
 //  .then((middleware) => {
 //   app.use(middleware,{ serverSideRender: true });
 // });
-//  app.use(devMiddleware(compiler));
+ app.use(devMiddleware(compiler));
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
-//  app.use(hotMiddleware(compiler),{
-//   // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-//  });
+ app.use(hotMiddleware(compiler),{
+  // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+ });
 
  app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
