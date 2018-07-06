@@ -24,7 +24,7 @@ let browserConfig= {
     mode: isDebug ? 'development' : 'production',
     entry: {
         // vendor: 'vendor.js',
-        main: [`webpack-hot-middleware/client?name=${page}`, `/pages/${page}.js`]
+        main: [`webpack-hot-middleware/client?name=${page}`,  `${__dirname}/pages/${page}.js`]
     },
     output: {
         path: path.join(__dirname, 'build'),

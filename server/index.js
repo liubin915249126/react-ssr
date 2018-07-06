@@ -106,7 +106,7 @@ app.use(require("webpack-dev-middleware")(compiler, {
 app.use(require("webpack-hot-middleware")(compiler));
 
 
- app.use(bodyparser({
+app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
 
