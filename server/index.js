@@ -75,7 +75,7 @@ pages.forEach((page,index)=>{
     
  })
 
-app.use(webpackMiddleware(compiler, { serverSideRender: true }));
+// app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
 //  koaWebpack({ config,dev: {
 //   publicPath: config.output.publicPath,
@@ -91,14 +91,15 @@ app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 //  .then((middleware) => {
 //   app.use(middleware);
 // });
-//  app.use(devMiddleware(compiler));
+ app.use(devMiddleware(compiler,{serverSideRender: true}));
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
-//  app.use(hotMiddleware(compiler),{
-//   log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-//  });
+
+ app.use(hotMiddleware(compiler,{
+  log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+ }));
 
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   // noInfo: true, publicPath: config.output.publicPath
