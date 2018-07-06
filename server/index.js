@@ -19,13 +19,13 @@ const webpackMiddleware = require("webpack-koa2-middleware");
 const openBrowser = require('react-dev-utils/openBrowser');
 
 const webpack = require('webpack');
-// const webpackDev = require('koa-webpack-dev-middleware');
-// const webpackHot = require('koa-webpack-hot-middleware');
+const webpackDev = require('koa-webpack-dev-middleware');
+const webpackHot = require('koa-webpack-hot-middleware');
 const config = require('../webpack.config')
 const compiler = webpack(config);
 
-const webpackDev  = require('webpack-dev-middleware')
-const webpackHot = require('webpack-hot-middleware')
+// const webpackDev  = require('webpack-dev-middleware')
+// const webpackHot = require('webpack-hot-middleware')
 const PassThrough = require('stream').PassThrough;
 
 const {layout1} =require ('./layout.js');
@@ -75,13 +75,7 @@ const devMiddleware = (compiler, opts) => {
     }
 }
 
-console.log(pages);
-pages.forEach((page,index)=>{
-    router.get(`/${page}`, render[`render${page}`],(err)=>{
-       console.log(err)
-    });
-    
- })
+
 
 //  app.use(webpackMiddleware(compiler, { serverSideRender: true , lazy:false,watchOptions: {
 //   aggregateTimeout: 300,
@@ -155,10 +149,7 @@ app.use(staticCache (path.resolve(__dirname,'build'),{
 }));
 
 app.use(async (ctx, next) => {
-  console.log(ctx.state);
-  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
-  console.log(assetsByChunkName);
- 
+  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName
   for(page in assetsByChunkName){
   //   router.get(`/${page}`, render[`render${page}`],(err)=>{
   //     console.log(err)
@@ -178,6 +169,14 @@ app.use(async (ctx, next) => {
 	`;
   }
 })
+
+console.log(pages);
+pages.forEach((page,index)=>{
+    router.get(`/${page}`, render[`render${page}`],(err)=>{
+       console.log(err)
+    });
+    
+ })
 
 app
     .use(router.routes())
