@@ -60,6 +60,7 @@ const devMiddleware = (compiler, opts) => {
             end: (content) => {
                 ctx.body = content
             },
+            locals:ctx.state,
             setHeader: (name, value) => {
                 ctx.set(name, value)
             }
@@ -83,40 +84,40 @@ const devMiddleware = (compiler, opts) => {
 //  .then((middleware) => {
 //   app.use(middleware);
 // });
-//  app.use(devMiddleware(compiler,{
-//   noInfo: false,
-//   watchOptions: {
-//       aggregateTimeout: 300,
-//       poll: true
-//   },
-//   publicPath: config.output.publicPath,
-//   stats: {
-//       colors: true
-//   },
-//   serverSideRender: true 
-//  }));
+ app.use(devMiddleware(compiler,{
+  noInfo: false,
+  watchOptions: {
+      aggregateTimeout: 300,
+      poll: true
+  },
+  publicPath: config.output.publicPath,
+  stats: {
+      colors: true
+  },
+  serverSideRender: true 
+ }));
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
 
-//  app.use(hotMiddleware(compiler,{
-//   log: console.log,
-//   path: '/__webpack_hmr',
-//   heartbeat: 10 * 1000
-//  }));
+ app.use(hotMiddleware(compiler,{
+  log: console.log,
+  path: '/__webpack_hmr',
+  heartbeat: 10 * 1000
+ }));
 
-app.use(webpackDev(compiler, {
+// app.use(webpackDev(compiler, {
 
-  // public path should be the same with webpack config
-  // publicPath: config.output.publicPath,
-  // noInfo: false,
-  // stats: {
-  //     colors: true
-  // },
-  serverSideRender: true 
-}));
-app.use(webpackHot(compiler));
+//   // public path should be the same with webpack config
+//   // publicPath: config.output.publicPath,
+//   // noInfo: false,
+//   // stats: {
+//   //     colors: true
+//   // },
+//   serverSideRender: true 
+// }));
+// app.use(webpackHot(compiler));
 
 
 // app.use(require("webpack-dev-middleware")(compiler, {
