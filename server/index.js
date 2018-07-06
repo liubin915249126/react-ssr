@@ -19,13 +19,13 @@ const webpackMiddleware = require("webpack-koa2-middleware");
 const openBrowser = require('react-dev-utils/openBrowser');
 
 const webpack = require('webpack');
-const webpackDev = require('koa-webpack-dev-middleware');
-const webpackHot = require('koa-webpack-hot-middleware');
+// const webpackDev = require('koa-webpack-dev-middleware');
+// const webpackHot = require('koa-webpack-hot-middleware');
 const config = require('../webpack.config')
 const compiler = webpack(config);
 
-// const webpackDev  = require('webpack-dev-middleware')
-// const webpackHot = require('webpack-hot-middleware')
+const webpackDev  = require('webpack-dev-middleware')
+const webpackHot = require('webpack-hot-middleware')
 const PassThrough = require('stream').PassThrough;
 
 const {layout1} =require ('./layout.js');
