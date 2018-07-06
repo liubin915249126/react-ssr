@@ -80,7 +80,8 @@ const TimeFixPlugin = require('time-fix-plugin');
 
 const isDebug = process.env.NODE_ENV === 'development'
 
-const hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
+const hotMiddlewareScript = 'webpack-hot-middleware/client?reload=true';
+const middlewareScript ='webpack/hot/dev-server';
 //入口文件
 let entry = {
 };
@@ -90,7 +91,7 @@ let plugins = [];
 pages.forEach((page,index)=>{
 
 
-entry[page] = [ `${__dirname}/pages/${page}.js`,hotMiddlewareScript],  
+entry[page] = [ `${__dirname}/pages/${page}.js`, hotMiddlewareScript, middlewareScript],  
 
 
   plugins[index] =  new HtmlWebpackPlugin({
@@ -109,7 +110,7 @@ let browserConfig = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
-        publicPath: ' ',
+        publicPath: "http://localhost:3005/",
         chunkFilename: "js/[id].bundle.js"
     },
     module: {
@@ -130,17 +131,17 @@ let browserConfig = {
               }
         ]
     },
-    devServer: {
-        contentBase: "./Script",//本地服务器所加载的页面所在的目录
-        historyApiFallback: true,
-        port:8083,
-        proxy:{
-            '/': { target: 'http://localhost:3000', secure: false }
-        }
-    },
+    // devServer: {
+    //     contentBase: "./Script",//本地服务器所加载的页面所在的目录
+    //     historyApiFallback: true,
+    //     port:8083,
+    //     proxy:{
+    //         '/': { target: 'http://localhost:3000', secure: false }
+    //     }
+    // },
     plugins:[
         // ...plugins,
-        new TimeFixPlugin(),
+        // new TimeFixPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         // new webpack.NoErrorsPlugin(),

@@ -53,6 +53,7 @@ const hotMiddleware = (compiler, opts) => {
     
 }
 const devMiddleware = (compiler, opts) => {
+  console.log(opts)
     const middleware = webpackDev(compiler, opts)
     return async (ctx, next) => {
         await middleware(ctx.req, {
@@ -65,15 +66,6 @@ const devMiddleware = (compiler, opts) => {
         }, next)
     }
 }
-
-// console.log(pages);
-pages.forEach((page,index)=>{
-  console.log(render[`render${page}`])
-    router.get(`/${page}`, render[`render${page}`],(err)=>{
-       console.log(err)
-    });
-    
- })
 
 // app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
@@ -91,15 +83,41 @@ pages.forEach((page,index)=>{
 //  .then((middleware) => {
 //   app.use(middleware);
 // });
- app.use(devMiddleware(compiler,{serverSideRender: true}));
+//  app.use(devMiddleware(compiler,{
+//   noInfo: false,
+//   watchOptions: {
+//       aggregateTimeout: 300,
+//       poll: true
+//   },
+//   publicPath: config.output.publicPath,
+//   stats: {
+//       colors: true
+//   },
+//   serverSideRender: true 
+//  }));
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
 
- app.use(hotMiddleware(compiler,{
-  log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
- }));
+//  app.use(hotMiddleware(compiler,{
+//   log: console.log,
+//   path: '/__webpack_hmr',
+//   heartbeat: 10 * 1000
+//  }));
+
+app.use(webpackDev(compiler, {
+
+  // public path should be the same with webpack config
+  // publicPath: config.output.publicPath,
+  // noInfo: false,
+  // stats: {
+  //     colors: true
+  // },
+  serverSideRender: true 
+}));
+app.use(webpackHot(compiler));
+
 
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   // noInfo: true, publicPath: config.output.publicPath
@@ -111,40 +129,56 @@ app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
 
-app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
-app.use(staticCache (path.resolve(__dirname,'build'),{
-  maxAge: 365 * 24 * 60 * 60,
-  gzip:true
-}));
+// app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
+// app.use(express.static(path.resolve("./", "pages"), {extensions: ['html','js']}));
 
-// app.use(async (ctx, next) => {
-//   // console.log(ctx.state);
-//   const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
-//   console.log(assetsByChunkName);
+// app.use(staticCache (path.resolve(__dirname,'build'),{
+//   maxAge: 365 * 24 * 60 * 60,
+//   gzip:true
+// }));
+
+app.use(async (ctx, next) => {
+  console.log(ctx.state);
+  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
+  console.log(assetsByChunkName);
  
-//   for(page in assetsByChunkName){
-//   //   router.get(`/${page}`, render[`render${page}`],(err)=>{
-//   //     console.log(err)
-//   //  });
-//   ctx.set('Content-Type', 'text/html; charset=utf-8');
-//   // ctx.body = layout1(page,assetsByChunkName[page])
-//   ctx.body = `
-// <html>
-//   <head>
-//     <title>My App</title>
-//   </head>
-//   <body>
-//     <div id="root"></div>
-// 		<script src="${render[`render${page}`](ctx,next)}"></script>		
-//   </body>
-// </html>		
-// 	`;
-//   }
-// })
+  for(page in assetsByChunkName){
+  //   router.get(`/${page}`, render[`render${page}`],(err)=>{
+  //     console.log(err)
+  //  });
+  ctx.set('Content-Type', 'text/html; charset=utf-8');
+  // ctx.body = layout1(page,assetsByChunkName[page])
+  ctx.body = `
+<html>
+  <head>
+    <title>My App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+		<script src="${render[`render${page}`](ctx,next)}"></script>		
+  </body>
+</html>		
+	`;
+  }
+})
 
-app
-    .use(router.routes())
-    .use(router.allowedMethods());
+// console.log(pages);
+pages.forEach((page,index)=>{
+  console.log(render[`render${page}`])
+    router.get(`/${page}`, render[`render${page}`],(err)=>{
+       console.log(err)
+    });
+    
+ })
+
+// app
+//     .use(router.routes())
+//     .use(router.allowedMethods());
+var reload = require('reload');
+var http = require('http');
+
+// var server = http.createServer(app);
+//     reload(server, app);
 
 app.listen(3005,()=>{
     console.log('server is start at port 3005');
