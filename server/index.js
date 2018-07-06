@@ -4,9 +4,10 @@ const pages = require('../server/readfile');
 const koa = require('koa');
 const express = require('express');
 const router = require('koa-router')();
-// const app = express();
-const app = new koa();
+const app = express();
+// const app = new koa();
 const render = require('../server/render');
+
 
 const path = require('path');
 const serve = require('koa-static');
@@ -65,19 +66,30 @@ const devMiddleware = (compiler, opts) => {
     }
 }
 
-console.log(pages);
+// console.log(pages);
 pages.forEach((page,index)=>{
+  console.log(render[`render${page}`])
     router.get(`/${page}`, render[`render${page}`],(err)=>{
        console.log(err)
     });
     
  })
 
- app.use(webpackMiddleware(compiler, { serverSideRender: true }));
+//  app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
-//  koaWebpack({ config })
+//  koaWebpack({ config,dev: {
+//   publicPath: config.output.publicPath,
+//   headers: { 'Content-Type': 'text/html; charset=utf-8' },
+//   stats: { colors: true },
+//   quiet: false,
+//   noInfo: true
+// }, hot: {
+//   log: console.log,
+//   path: '/__webpack_hmr',
+//   heartbeat: 10 * 1000
+// } })
 //  .then((middleware) => {
-//   app.use(middleware,{ serverSideRender: true });
+//   app.use(middleware);
 // });
 //  app.use(devMiddleware(compiler));
 // app.use(require("webpack-dev-middleware")(compiler, {
@@ -85,8 +97,14 @@ pages.forEach((page,index)=>{
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
 //  app.use(hotMiddleware(compiler),{
-//   // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+//   log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
 //  });
+
+app.use(require("webpack-dev-middleware")(compiler, {
+  // noInfo: true, publicPath: config.output.publicPath
+}));
+app.use(require("webpack-hot-middleware")(compiler));
+
 
  app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
@@ -98,30 +116,30 @@ app.use(staticCache (path.resolve(__dirname,'build'),{
   gzip:true
 }));
 
-app.use(async (ctx, next) => {
-  // console.log(ctx.state);
-  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
-  console.log(assetsByChunkName);
+// app.use(async (ctx, next) => {
+//   // console.log(ctx.state);
+//   const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
+//   console.log(assetsByChunkName);
  
-  for(page in assetsByChunkName){
-  //   router.get(`/${page}`, render[`render${page}`],(err)=>{
-  //     console.log(err)
-  //  });
-  ctx.set('Content-Type', 'text/html; charset=utf-8');
-  // ctx.body = layout1(page,assetsByChunkName[page])
-  ctx.body = `
-<html>
-  <head>
-    <title>My App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-		<script src="${render[`render${page}`](ctx,next)}"></script>		
-  </body>
-</html>		
-	`;
-  }
-})
+//   for(page in assetsByChunkName){
+//   //   router.get(`/${page}`, render[`render${page}`],(err)=>{
+//   //     console.log(err)
+//   //  });
+//   ctx.set('Content-Type', 'text/html; charset=utf-8');
+//   // ctx.body = layout1(page,assetsByChunkName[page])
+//   ctx.body = `
+// <html>
+//   <head>
+//     <title>My App</title>
+//   </head>
+//   <body>
+//     <div id="root"></div>
+// 		<script src="${render[`render${page}`](ctx,next)}"></script>		
+//   </body>
+// </html>		
+// 	`;
+//   }
+// })
 
 app
     .use(router.routes())

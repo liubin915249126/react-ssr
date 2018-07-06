@@ -58,5 +58,7 @@ pages.forEach((page,index)=>{
 })
 
 
+for(let renderitem in render){
+  module.exports[renderitem] = render[renderitem];
+}
 
-module.exports = render;

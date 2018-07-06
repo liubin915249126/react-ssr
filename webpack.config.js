@@ -14,25 +14,18 @@ let entry = {
 // htmlplugin
 let plugins = [];
 
+let configArray = []; 
+
 pages.forEach((page,index)=>{
 
 
-entry[page] = [ `${__dirname}/pages/${page}.js`,hotMiddlewareScript],  
-
-
-  plugins[index] =  new HtmlWebpackPlugin({
-        title:'react 学习',
-        inject:'body',
-        chunks: [page],
-        filename: `${page}.html`,
-        template:path.resolve(__dirname, "index.html")
-    })
-})
-
-//浏览器端的配置
-let browserConfig = {
+let browserConfig= {
+    name: page,
     mode: isDebug ? 'development' : 'production',
-    entry,
+    entry: {
+        // vendor: 'vendor.js',
+        main: [`webpack-hot-middleware/client?name=${page}`, `/pages/${page}.js`]
+    },
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
@@ -71,8 +64,56 @@ let browserConfig = {
         new webpack.HotModuleReplacementPlugin(),
         // new webpack.NoErrorsPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-    ]
-};
+    ],
+}
+configArray.push(browserConfig);
+})
+
+//浏览器端的配置
+// let browserConfig = {
+//     mode: isDebug ? 'development' : 'production',
+//     entry,
+//     output: {
+//         path: path.join(__dirname, 'build'),
+//         filename: "js/[name].bundle.js",
+//         publicPath: ' ',
+//         chunkFilename: "js/[id].bundle.js"
+//     },
+//     module: {
+//         rules: [
+//             {
+//                 test: /\.js?$/,
+//                 loader: 'babel-loader',
+//                 // options: {
+//                 //     query:{
+//                 //         // 'presets': [['env'], ['stage-0'], ['react']],
+//                 //         'env': {
+//                 //           'development': {
+//                 //             'presets': ['react-hmre']
+//                 //           }
+//                 //         }
+//                 //       }
+//                 // },
+//               }
+//         ]
+//     },
+//     devServer: {
+//         contentBase: "./Script",//本地服务器所加载的页面所在的目录
+//         historyApiFallback: true,
+//         port:8083,
+//         proxy:{
+//             '/': { target: 'http://localhost:3000', secure: false }
+//         }
+//     },
+//     plugins:[
+//         // ...plugins,
+//         new webpack.optimize.OccurrenceOrderPlugin(),
+//         new webpack.HotModuleReplacementPlugin(),
+//         // new webpack.NoErrorsPlugin(),
+//         new webpack.NoEmitOnErrorsPlugin(),
+//     ],
+// };
 
 
-module.exports = browserConfig;
+
+module.exports = configArray;
