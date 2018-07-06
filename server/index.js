@@ -75,7 +75,11 @@ pages.forEach((page,index)=>{
 
  app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
-//  koaWebpack({ config })
+//  koaWebpack({ config,hotClient: { hmr: true, reload: true },devMiddleware: {
+//   stats: 'minimal',
+//   publicPath:config.output.publicPath,
+//   contentBase:'',
+// }, })
 //  .then((middleware) => {
 //   app.use(middleware,{ serverSideRender: true });
 // });
