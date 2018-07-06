@@ -56,7 +56,16 @@ const devMiddleware = (compiler, opts) => {
     return async (ctx, next) => {
         await middleware(ctx.req, {
             end: (content) => {
+              console.log(content)
                 ctx.body = content
+            },
+            send: (content)=>{
+              ctx.body = content
+              console.log(content);
+            },
+            done: (content)=>{
+              ctx.body = content
+              console.log(content);
             },
             setHeader: (name, value) => {
                 ctx.set(name, value)
@@ -86,23 +95,57 @@ pages.forEach((page,index)=>{
 //  .then((middleware) => {
 //   app.use(middleware,{ serverSideRender: true });
 // });
- app.use(devMiddleware(compiler),{
-  // lazy:false,watchOptions: {
-  //   aggregateTimeout: 300,
-  //   poll: 1000
-  // },watch:true
-});
+//  app.use(devMiddleware(compiler,{
+//   noInfo: true,
+//         watchOptions: {
+//             aggregateTimeout: 300,
+//             poll: true
+//         },
+//         publicPath: '/build/',
+//         stats: {
+//             colors: true
+//         },
+//         serverSideRender: true 
+// }));
+
+
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
- app.use(hotMiddleware(compiler),{
-  // log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
- });
+//  app.use(hotMiddleware(compiler,{
+//   log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+//  }));
 
- app.use(bodyparser({
+app.use(
+  devMiddleware(compiler, {
+      noInfo: true,
+      watchOptions: {
+          aggregateTimeout: 300,
+          poll: true
+      },
+      publicPath: ' ',
+      stats: {
+          colors: true
+      },
+      serverSideRender: true 
+  })
+);
+app.use(
+  hotMiddleware(compiler, {
+      log: console.log,
+      path: '/__webpack_hmr',
+      heartbeat: 10 * 1000
+  })
+);
+
+
+app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
+
+
+
 
 app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
 app.use(staticCache (path.resolve(__dirname,'build'),{
@@ -111,7 +154,7 @@ app.use(staticCache (path.resolve(__dirname,'build'),{
 }));
 
 app.use(async (ctx, next) => {
-  // console.log(ctx.state);
+  console.log(ctx.state);
   const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
   console.log(assetsByChunkName);
  
