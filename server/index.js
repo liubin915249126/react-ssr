@@ -84,22 +84,22 @@ const devMiddleware = (compiler, opts) => {
 //  .then((middleware) => {
 //   app.use(middleware);
 // });
- app.use(devMiddleware(compiler,{
-  noInfo: false,
-  watchOptions: {
-      aggregateTimeout: 300,
-      poll: true
-  },
-  publicPath: config.output.publicPath,
-  stats: {
-      colors: true
-  },
-  serverSideRender: true 
- }));
-// app.use(require("webpack-dev-middleware")(compiler, {
-//   noInfo: true, publicPath: config.output.publicPath
-// }));
-//  app.use(require("webpack-hot-middleware")(compiler));
+//  app.use(devMiddleware(compiler,{
+//   noInfo: false,
+//   watchOptions: {
+//       aggregateTimeout: 300,
+//       poll: true
+//   },
+//   publicPath: config.output.publicPath,
+//   stats: {
+//       colors: true
+//   },
+//   serverSideRender: true 
+//  }));
+app.use(require("webpack-dev-middleware")(compiler, {
+  noInfo: true, publicPath: config.output.publicPath
+}));
+ app.use(require("webpack-hot-middleware")(compiler));
 
  app.use(hotMiddleware(compiler,{
   log: console.log,
