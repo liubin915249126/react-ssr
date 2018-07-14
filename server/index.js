@@ -53,7 +53,7 @@ const hotMiddleware = (compiler, opts) => {
     
 }
 const devMiddleware = (compiler, opts) => {
-  console.log(opts)
+  // console.log(opts)
     const middleware = webpackDev(compiler, opts)
     return async (ctx, next) => {
         await middleware(ctx.req, {
@@ -84,6 +84,7 @@ const devMiddleware = (compiler, opts) => {
 //  .then((middleware) => {
 //   app.use(middleware);
 // });
+
 //  app.use(devMiddleware(compiler,{
 //   noInfo: false,
 //   watchOptions: {
@@ -96,16 +97,18 @@ const devMiddleware = (compiler, opts) => {
 //   },
 //   serverSideRender: true 
 //  }));
-app.use(require("webpack-dev-middleware")(compiler, {
-  noInfo: true, publicPath: config.output.publicPath
-}));
- app.use(require("webpack-hot-middleware")(compiler));
 
- app.use(hotMiddleware(compiler,{
-  log: console.log,
-  path: '/__webpack_hmr',
-  heartbeat: 10 * 1000
- }));
+app.use(require("webpack-dev-middleware")(compiler, {
+  noInfo: true, publicPath: config.output.publicPath,serverSideRender:true
+}));
+app.use(require("webpack-hot-middleware")(compiler));
+
+
+//  app.use(hotMiddleware(compiler,{
+//   log: console.log,
+//   // path: '/__webpack_hmr',
+//   // heartbeat: 10 * 1000
+//  }));
 
 // app.use(webpackDev(compiler, {
 
@@ -126,9 +129,9 @@ app.use(require("webpack-dev-middleware")(compiler, {
 // app.use(require("webpack-hot-middleware")(compiler));
 
 
-app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text']
-}))
+// app.use(bodyparser({
+//   enableTypes: ['json', 'form', 'text']
+// }))
 
 // app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
 // app.use(express.static(path.resolve("./", "pages"), {extensions: ['html','js']}));
@@ -139,7 +142,7 @@ app.use(bodyparser({
 // }));
 
 app.use(async (ctx, next) => {
-  console.log(ctx.state);
+  console.log("111",ctx.state);
   const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
   console.log(assetsByChunkName);
  
@@ -165,9 +168,9 @@ app.use(async (ctx, next) => {
 
 // console.log(pages);
 pages.forEach((page,index)=>{
-  console.log(render[`render${page}`])
+  // console.log(render[`render${page}`])
     router.get(`/${page}`, render[`render${page}`],(err)=>{
-       console.log(err)
+      //  console.log(err)
     });
     
  })
@@ -175,11 +178,11 @@ pages.forEach((page,index)=>{
 // app
 //     .use(router.routes())
 //     .use(router.allowedMethods());
-var reload = require('reload');
-var http = require('http');
+// var reload = require('reload');
+// var http = require('http');
 
-// var server = http.createServer(app);
-//     reload(server, app);
+// // var server = http.createServer(app);
+// //     reload(server, app);
 
 app.listen(3005,()=>{
     console.log('server is start at port 3005');

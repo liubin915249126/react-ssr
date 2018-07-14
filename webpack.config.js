@@ -91,7 +91,7 @@ let plugins = [];
 pages.forEach((page,index)=>{
 
 
-entry[page] = [ `${__dirname}/pages/${page}.js`, hotMiddlewareScript, middlewareScript],  
+entry[page] = [ `${__dirname}/pages/${page}.js`, hotMiddlewareScript],  
 
 
   plugins[index] =  new HtmlWebpackPlugin({
@@ -110,7 +110,7 @@ let browserConfig = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: "js/[name].bundle.js",
-        publicPath: "http://localhost:3005/",
+        publicPath: "",
         chunkFilename: "js/[id].bundle.js"
     },
     module: {
