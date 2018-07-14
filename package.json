@@ -52,8 +52,10 @@
     "express": "^4.16.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-hot-loader": "^4.3.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "reload": "^2.3.0",
     "webpack-dev-server": "^3.1.4"
   },
   "babel": {

@@ -9,6 +9,7 @@ const TimeFixPlugin = require('time-fix-plugin');
 const isDebug = process.env.NODE_ENV === 'development'
 
 const hotMiddlewareScript = 'webpack-hot-middleware/client?timeout=20000&reload=true';
+const hotMiddlewareScript1 = 'webpack-hot-middleware/client?path=http://localhost:3005/__webpack_hmr'
 //入口文件
 let entry = {
 };
@@ -44,7 +45,7 @@ let browserConfig = {
         rules: [
             {
                 test: /\.js?$/,
-                loader: 'babel-loader',
+                loader: ["babel-loader"],
                 // options: {
                 //     query:{
                 //         // 'presets': [['env'], ['stage-0'], ['react']],

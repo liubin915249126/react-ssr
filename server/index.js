@@ -4,9 +4,10 @@ const pages = require('../server/readfile');
 const koa = require('koa');
 const express = require('express');
 const router = require('koa-router')();
-// const app = express();
-const app = new koa();
+const app = express();
+// const app = new koa();
 const render = require('../server/render');
+
 
 const path = require('path');
 const serve = require('koa-static');
@@ -52,22 +53,14 @@ const hotMiddleware = (compiler, opts) => {
     
 }
 const devMiddleware = (compiler, opts) => {
+  console.log(opts)
     const middleware = webpackDev(compiler, opts)
     return async (ctx, next) => {
         await middleware(ctx.req, {
             end: (content) => {
-              console.log(content)
                 ctx.body = content
             },
             locals:ctx.state,
-            // send: (content)=>{
-            //   ctx.body = content
-            //   console.log(content);
-            // },
-            // done: (content)=>{
-            //   ctx.body = content
-            //   console.log(content);
-            // },
             setHeader: (name, value) => {
                 ctx.set(name, value)
             }
@@ -75,81 +68,81 @@ const devMiddleware = (compiler, opts) => {
     }
 }
 
+// app.use(webpackMiddleware(compiler, { serverSideRender: true }));
 
-
-//  app.use(webpackMiddleware(compiler, { serverSideRender: true , lazy:false,watchOptions: {
-//   aggregateTimeout: 300,
-//   poll: 1000
-// },watch:true}));
-
-//  koaWebpack({ config,hotClient: { hmr: true, reload: true },devMiddleware: {
-//   stats: 'minimal',
-//   publicPath:config.output.publicPath,
-//   contentBase:'',
-// }, })
+//  koaWebpack({ config,dev: {
+//   publicPath: config.output.publicPath,
+//   headers: { 'Content-Type': 'text/html; charset=utf-8' },
+//   stats: { colors: true },
+//   quiet: false,
+//   noInfo: true
+// }, hot: {
+//   log: console.log,
+//   path: '/__webpack_hmr',
+//   heartbeat: 10 * 1000
+// } })
 //  .then((middleware) => {
-//   app.use(middleware,{ serverSideRender: true });
+//   app.use(middleware);
 // });
 //  app.use(devMiddleware(compiler,{
-//   noInfo: true,
-//         watchOptions: {
-//             aggregateTimeout: 300,
-//             poll: true
-//         },
-//         publicPath: '/build/',
-//         stats: {
-//             colors: true
-//         },
-//         serverSideRender: true 
-// }));
-
-
+//   noInfo: false,
+//   watchOptions: {
+//       aggregateTimeout: 300,
+//       poll: true
+//   },
+//   publicPath: config.output.publicPath,
+//   stats: {
+//       colors: true
+//   },
+//   serverSideRender: true 
+//  }));
 // app.use(require("webpack-dev-middleware")(compiler, {
 //   noInfo: true, publicPath: config.output.publicPath
 // }));
 //  app.use(require("webpack-hot-middleware")(compiler));
+
 //  app.use(hotMiddleware(compiler,{
-//   log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+//   log: console.log,
+//   path: '/__webpack_hmr',
+//   heartbeat: 10 * 1000
 //  }));
 
-app.use(
-  devMiddleware(compiler, {
-      noInfo: true,
-      watchOptions: {
-          aggregateTimeout: 300,
-          poll: true
-      },
-      publicPath: ' ',
-      stats: {
-          colors: true
-      },
-      serverSideRender: true 
-  })
-);
-app.use(
-  hotMiddleware(compiler, {
-      log: console.log,
-      path: '/__webpack_hmr',
-      heartbeat: 10 * 1000
-  })
-);
+app.use(webpackDev(compiler, {
+
+  // public path should be the same with webpack config
+  // publicPath: config.output.publicPath,
+  // noInfo: false,
+  // stats: {
+  //     colors: true
+  // },
+  serverSideRender: true 
+}));
+app.use(webpackHot(compiler));
+
+
+// app.use(require("webpack-dev-middleware")(compiler, {
+//   // noInfo: true, publicPath: config.output.publicPath
+// }));
+// app.use(require("webpack-hot-middleware")(compiler));
 
 
 app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
 
+// app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
+// app.use(express.static(path.resolve("./", "pages"), {extensions: ['html','js']}));
 
-
-
-app.use(serve(path.resolve("./", "build"), {extensions: ['html','js']}));
-app.use(staticCache (path.resolve(__dirname,'build'),{
-  maxAge: 365 * 24 * 60 * 60,
-  gzip:true
-}));
+// app.use(staticCache (path.resolve(__dirname,'build'),{
+//   maxAge: 365 * 24 * 60 * 60,
+//   gzip:true
+// }));
 
 app.use(async (ctx, next) => {
-  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName
+  console.log(ctx.state);
+  const assetsByChunkName = ctx.state.webpackStats.toJson().assetsByChunkName;
+  console.log(assetsByChunkName);
+ 
   for(page in assetsByChunkName){
   //   router.get(`/${page}`, render[`render${page}`],(err)=>{
   //     console.log(err)
@@ -170,17 +163,23 @@ app.use(async (ctx, next) => {
   }
 })
 
-console.log(pages);
+// console.log(pages);
 pages.forEach((page,index)=>{
+  console.log(render[`render${page}`])
     router.get(`/${page}`, render[`render${page}`],(err)=>{
        console.log(err)
     });
     
  })
 
-app
-    .use(router.routes())
-    .use(router.allowedMethods());
+// app
+//     .use(router.routes())
+//     .use(router.allowedMethods());
+var reload = require('reload');
+var http = require('http');
+
+// var server = http.createServer(app);
+//     reload(server, app);
 
 app.listen(3005,()=>{
     console.log('server is start at port 3005');
