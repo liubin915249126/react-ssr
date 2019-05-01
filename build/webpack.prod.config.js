@@ -132,7 +132,7 @@ clientConfig = {
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
         }),
         new HtmlWebpackPlugin({
-            filename: "../../views/prod/index.html",
+            filename: "./views/prod/index.html",
             template: "./views/tpl/index.tpl.html",
             chunksSortMode: "none"
         }),
@@ -149,9 +149,10 @@ serverConfig = {
     context: path.resolve(__dirname, ".."),
     entry: { server: "./server/server.prod" },
     output: {
+        // publicPath:'',
         path: path.resolve(__dirname, "../dist/server"),
         filename: "[name].js",
-        chunkFilename: "chunk.[name].js"
+        chunkFilename: "chunk.[name].js",
     },
     target: "node",
     node: {
@@ -163,11 +164,18 @@ serverConfig = {
             {
                 test: /\.(jsx|js)$/,
                 exclude: /^node_modules$/,
-                use: ["babel-loader"]
+                use: [
+                    {
+                        loader:"babel-loader",
+                        options: {
+                            presets: ['@babel/preset-env']
+                        }
+                    }
+                ]
             },
             {
                 test:/\.scss$/,
-                use: [ 'style-loader', {
+                use: [ 'iso-morphic-style-loader', {
                     loader:'css-loader',
                     options:{
                         modules:true,
@@ -179,16 +187,19 @@ serverConfig = {
             },
             {
                 test: /\.(jpg|png|gif|webp)$/,
-                use: ["url-loader?limit=8000"]
+                use: [{
+                    loader:"url-loader",
+                    options:{limit:8000}
+                }]
             },
             {
                 test: /\.json$/,
-                use: "json"
+                use: [{loader:"json-loader"}]
             }
         ]
     },
     externals: getExternals(),
-    resolve: { extensions: [".js", ".json", ".scss"] },
+    resolve: { extensions: [" ",".js", ".json", ".scss"] },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),
         // new webpack.optimize.DedupePlugin(),

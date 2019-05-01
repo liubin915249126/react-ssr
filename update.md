@@ -46,3 +46,17 @@ Cannot find module 'webpack/lib/removeAndDo' //extract-text-webpack-plugin
 >
 webpack.optimize.DedupePlugin is not a constructor // 有些JS库有自己的依赖树，并且这些库可能有交叉的依赖，DedupePlugin可以找出他们并删除重复的依赖。
 >
+
+o.routes is not a function
+```js
+    router.use(subRouter.default.routes(), subRouter.default.allowedMethods())
+```
+// default
+```js
+   yarn add koa koa-bodyparser koa-compose koa-compress koa-convert koa-json koa-logger koa-router koa-session koa-static koa-views
+   yarn add koa-webpack-dev-middleware koa-webpack-hot-middleware -D
+```
+window is not defined
+```js
+   npm install iso-morphic-style-loader --save-dev
+```

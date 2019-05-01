@@ -16,7 +16,11 @@ fs.readdirSync(__dirname)
     )
     .forEach(filename => {
         subRouter = require(`./${filename}`)
-        router.use(subRouter.routes(), subRouter.allowedMethods())
+        if(subRouter.default){
+          router.use(subRouter.default.routes(), subRouter.default.allowedMethods())
+        }else{
+          router.use(subRouter.routes(), subRouter.allowedMethods())
+        }
     })
 
 // module.exports =  router
