@@ -5,8 +5,8 @@ require('babel-polyfill')
 require('source-map-support').install()
 
 // Javascript require hook
-require('babel-register')({
-    presets: ['es2015', 'react', 'stage-0'],
+require('@babel/register')({
+    presets: ['@babel/env', '@babel/react'],
     plugins: ['add-module-exports']
 })
 
