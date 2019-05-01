@@ -4,13 +4,14 @@
         "@babel/react",
     ],
     "plugins": [
+        "@babel/plugin-syntax-dynamic-import"
         // [
         //     "import",
         //     {
         //         "libraryName": "antd",
         //         "style": true
         //     },
-        //     "syntax-dynamic-import"
+        // "syntax-dynamic-import"
         // ],
         // "transform-decorators-legacy"
     ]

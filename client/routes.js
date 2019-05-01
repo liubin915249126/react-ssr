@@ -1,37 +1,33 @@
 // Hook for server
-if (typeof require.ensure !== 'function') {
-    require.ensure = function(dependencies, callback) {
-        callback(require)
-    }
-}
+// if (typeof require.ensure !== 'function') {
+//     require.ensure = function(dependencies, callback) {
+//         callback(require)
+//     }
+// }
+import {Redirect} from 'react-router-dom'
 
-const routes = {
-    childRoutes: [{
-        path: '/',
+const routes = [
+    // childRoutes: [{
+        {path: '/',
         component: require('./common/containers/Root'),
-        indexRoute: {
-            getComponent(nextState, callback) {
-                require.ensure([], require => {
-                    callback(null, require('./home/containers/App'))
-                }, 'home')
-            }
-        },
-        childRoutes: [{
+        childRoutes: [
+            {
+                path: 'home',
+                component:require('./home/containers/App')
+            },
+            {
             path: 'explore',
-            getComponent(nextState, callback) {
-                require.ensure([], require => {
-                    callback(null, require('./explore/containers/App'))
-                }, 'explore')
-            }
+            component:require('./explore/containers/App')
         }, {
             path: 'about',
-            getComponent(nextState, callback) {
-                require.ensure([], require => {
-                    callback(null, require('./about/containers/App'))
-                }, 'about')
-            }
-        }]
-    }]
-}
+            component:require('./about/containers/App')
+            // getComponent(nextState, callback) {
+            //     require.ensure([], require => {
+            //         callback(null, require('./about/containers/App'))
+            //     }, 'about')
+            // }
+        }]}
+    // }]
+    ]
 
 export default routes

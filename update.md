@@ -64,3 +64,9 @@ window is not defined
 ```js
    yarn add react-router-dom
 ```
+export 'browserHistory' was not found in 'react-router
+export 'match' was not found in 'react-router
+
+yarn add @babel/plugin-syntax-dynamic-import
+
+(0 , _reactRouter.match) is not a function

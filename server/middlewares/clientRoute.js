@@ -1,6 +1,6 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {match, RouterContext} from 'react-router'
+import {match, RouterContext,StaticRouter} from 'react-router'
 import {Provider} from 'react-redux'
 import routes from '../../client/routes'
 import configureStore from '../../client/common/store/configureStore'
@@ -26,7 +26,9 @@ async function clientRoute(ctx, next) {
         await ctx.render('index', {
             root: renderToString(
                 <Provider store={store}>
+                  <StaticRouter location={req.url} context={context}>
                     <RouterContext {..._renderProps}/>
+                  </StaticRouter>
                 </Provider>
             ),
             state: store.getState()
