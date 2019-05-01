@@ -3,7 +3,11 @@ const path = require("path"),
     webpack = require("webpack"),
     autoprefixer = require("autoprefixer"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
-    ExtractTextPlugin = require("extract-text-webpack-plugin");
+    MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+    UglifyJsPlugin = require("uglifyjs-webpack-plugin"),
+    // ExtractTextPlugin = require("extract-text-webpack-plugin"),
+    CleanWebpackPlugin = require('clean-webpack-plugin'),
+    OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 let clientConfig, serverConfig;
 
 function getExternals() {
@@ -22,7 +26,7 @@ clientConfig = {
     context: path.resolve(__dirname, ".."),
     entry: {
         bundle: "./client",
-        vendor: ["react", "react-dom", "redux", "react-redux", "superagent"]
+        // vendor: ["react", "react-dom", "redux", "react-redux", "superagent"]
     },
     output: {
         path: path.resolve(__dirname, "../dist/client"),
@@ -56,26 +60,74 @@ clientConfig = {
             {
                 test: /\.json$/,
                 use: "json"
+            },
+            {
+                test: /\.html$/,
+                use:[ {
+                    loader:'html-loader',
+                    options:{
+                        minimize:false,
+                    }
+                }]
             }
-            // {
-            //     test: /\.html$/,
-            //     loader: 'html?minimize=false'
-            // }
         ]
     },
-    postcss: [autoprefixer({ browsers: ["> 5%"] })],
-    resolve: { extensions: ["", ".js", ".json", ".scss", ""] },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+              cache: true,
+              parallel: true,
+              sourceMap: true // set to true if you want JS source maps
+            }),
+            new OptimizeCSSAssetsPlugin({})
+        ],
+        runtimeChunk: {
+            name: "manifest"
+        },
+        // minimizer: true, // [new UglifyJsPlugin({...})]
+        splitChunks: {
+            chunks: "async",
+            minSize: 30000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            name: false,
+            cacheGroups: {
+                vendor: {
+                    name: "vendor",
+                    chunks: "initial",
+                    priority: -10,
+                    reuseExistingChunk: false,
+                    test: /node_modules\/(.*)\.js/
+                },
+                // 处理异步chunk
+                "async-vendors": {
+                    test: /[\\/]node_modules[\\/]/,
+                    minChunks: 2,
+                    chunks: "async",
+                    name: "async-vendors"
+                },
+                antd: {
+                    name: "chunk-antd", // 单独将 antd 拆包
+                    priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
+                    test: /[\/]node_modules[\/]antd[\/]/
+                },
+                // styles: {
+                //   name: 'styles',
+                //   test: /\.(scss|css)$/,
+                //   chunks: 'all',
+                //   minChunks: 1,
+                //   reuseExistingChunk: true,
+                //   enforce: true
+                // }
+            }
+        }
+    },
+    // postcss: [autoprefixer({ browsers: ["> 5%"] })],
+    resolve: { extensions: [".js", ".json", ".scss"] },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ["vendor", "manifest"],
-            filename: "[name].[chunkhash:8].js"
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            comments: false
-        }),
+        // new webpack.optimize.DedupePlugin(),
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
         }),
@@ -84,11 +136,16 @@ clientConfig = {
             template: "./views/tpl/index.tpl.html",
             chunksSortMode: "none"
         }),
-        new ExtractTextPlugin("[name].[contenthash:8].css", { allChunks: true })
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+        }),
+        // new ExtractTextPlugin("[name].[contenthash:8].css", { allChunks: true }),
+        new CleanWebpackPlugin({cleanAfterEveryBuildPatterns:[path.join(__dirname, 'dist')]})
     ]
 };
 
 serverConfig = {
+    mode:'production',
     context: path.resolve(__dirname, ".."),
     entry: { server: "./server/server.prod" },
     output: {
@@ -102,16 +159,11 @@ serverConfig = {
         __dirname: true
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "babel",
-                query: {
-                    presets: ["env", "react"],
-                    plugins: ["add-module-exports"],
-                    cacheDirectory: true
-                }
+                test: /\.(jsx|js)$/,
+                exclude: /^node_modules$/,
+                use: ["babel-loader"]
             },
             {
                 test:/\.scss$/,
@@ -127,23 +179,24 @@ serverConfig = {
             },
             {
                 test: /\.(jpg|png|gif|webp)$/,
-                loader: "url?limit=8000"
+                use: ["url-loader?limit=8000"]
             },
             {
                 test: /\.json$/,
-                loader: "json"
+                use: "json"
             }
         ]
     },
     externals: getExternals(),
-    resolve: { extensions: ["", ".js", ".json", ".scss"] },
+    resolve: { extensions: [".js", ".json", ".scss"] },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            comments: false
-        }),
+        // new webpack.optimize.DedupePlugin(),
+        new CleanWebpackPlugin({cleanAfterEveryBuildPatterns:[path.join(__dirname, 'dist')]}),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: { warnings: false },
+        //     comments: false
+        // }),
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
         })
@@ -151,3 +204,4 @@ serverConfig = {
 };
 
 module.exports = [clientConfig, serverConfig];
+

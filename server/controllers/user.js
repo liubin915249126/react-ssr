@@ -7,3 +7,4 @@ async function getUserInfo(ctx) {
 }
 
 export default {getUserInfo}
+// module.exports =  {getUserInfo}

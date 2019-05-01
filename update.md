@@ -38,3 +38,11 @@ Couldn't find preset "env" relative to directory
    yarn add @babel/core babel-eslint babel-loader babel-plugin-add-module-exports babel-plugin-transform-runtime babel-polyfill @babel/preset-env @babel/preset-react babel-preset-react-hmre @babel/preset-stage-0 babel-register -D
 ```
 #### yarn add mini-css-extract-plugin uglifyjs-webpack-plugin optimize-css-assets-webpack-plugin -D
+
+####
+>
+Cannot find module 'webpack/lib/removeAndDo' //extract-text-webpack-plugin
+>
+>
+webpack.optimize.DedupePlugin is not a constructor // 有些JS库有自己的依赖树，并且这些库可能有交叉的依赖，DedupePlugin可以找出他们并删除重复的依赖。
+>

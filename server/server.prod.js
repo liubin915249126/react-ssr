@@ -6,6 +6,14 @@ import app from './app'
 import router from './routes'
 import clientRoute from './middlewares/clientRoute'
 
+// require('babel-polyfill')
+// const serve = require('koa-static')
+// const path = require('path')
+// const views = require('koa-views')
+// const app = require('./app')
+// const router = require('./routes')
+// const clientRoute = require('./middlewares/clientRoute')
+
 // const port = process.env.port || 3030
 const port = 3030
 

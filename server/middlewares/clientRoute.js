@@ -5,6 +5,14 @@ import {Provider} from 'react-redux'
 import routes from '../../client/routes'
 import configureStore from '../../client/common/store/configureStore'
 
+// const React = require('react')
+// const renderToString = require('react-dom/server')
+// const {match, RouterContext} = require('react-router')
+// const {Provider} = require('react-redux')
+// const routes = require('../../client/routes')
+// const configureStore = require('../../client/common/store/configureStore')
+
+
 const store = configureStore()
 
 async function clientRoute(ctx, next) {
@@ -29,3 +37,4 @@ async function clientRoute(ctx, next) {
 }
 
 export default clientRoute
+// module.exports = clientRoute
