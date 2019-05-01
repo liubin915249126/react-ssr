@@ -3,7 +3,8 @@ const path = require("path"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
     ProgressBarPlugin = require("progress-bar-webpack-plugin"),
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-    UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+    UglifyJsPlugin = require("uglifyjs-webpack-plugin"),
+    OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 module.exports = {
     mode:'development',
     devtool: "eval-source-map",
@@ -32,7 +33,15 @@ module.exports = {
                 test:/\.scss$/,
                 use: [
                     // 'style-loader',
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                          // you can specify a publicPath here
+                          // by default it uses publicPath in webpackOptions.output
+                          publicPath: '../',
+                          hmr: process.env.NODE_ENV === 'development',
+                        },
+                    },
                     {
                     loader:'css-loader',
                     options:{
@@ -41,7 +50,13 @@ module.exports = {
                         importLoaders:1,
                         localIdentName:`[name]__[local]__[hash:base64:8]`
                     }
-                },'sass-loader'],
+                },{
+                    loader:'sass-loader',
+                    // options:{
+                    //     javascriptEnabled: true,
+                    // }
+                }
+               ],
             },
             {
                 test: /\.(jpg|png|gif|webp)$/,
@@ -101,7 +116,7 @@ module.exports = {
                     name: "chunk-antd", // 单独将 antd 拆包
                     priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
                     test: /[\/]node_modules[\/]antd[\/]/
-                }
+                },
                 styles: {
                   name: 'styles',
                   test: /\.(scss|css)$/,
@@ -129,6 +144,9 @@ module.exports = {
             filename: "../views/dev/index.html",
             template: "./views/tpl/index.tpl.html"
         }),
-        new ProgressBarPlugin({ summary: false })
+        new ProgressBarPlugin({ summary: false }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+        }),
     ]
 };
