@@ -37,3 +37,4 @@ Couldn't find preset "env" relative to directory
 ```js
    yarn add @babel/core babel-eslint babel-loader babel-plugin-add-module-exports babel-plugin-transform-runtime babel-polyfill @babel/preset-env @babel/preset-react babel-preset-react-hmre @babel/preset-stage-0 babel-register -D
 ```
+#### yarn add mini-css-extract-plugin uglifyjs-webpack-plugin -D

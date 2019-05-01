@@ -1,8 +1,9 @@
 const path = require("path"),
     webpack = require("webpack"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
-    ProgressBarPlugin = require("progress-bar-webpack-plugin");
-
+    ProgressBarPlugin = require("progress-bar-webpack-plugin"),
+    MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+    UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 module.exports = {
     mode:'development',
     devtool: "eval-source-map",
@@ -29,7 +30,10 @@ module.exports = {
             },
             {
                 test:/\.scss$/,
-                use: [ 'style-loader', {
+                use: [
+                    // 'style-loader',
+                    MiniCssExtractPlugin.loader,
+                    {
                     loader:'css-loader',
                     options:{
                         modules:true,
@@ -59,14 +63,14 @@ module.exports = {
         ]
     },
     optimization: {
-        // minimizer: [
-        //     new UglifyJsPlugin({
-        //       cache: true,
-        //       parallel: true,
-        //       sourceMap: true // set to true if you want JS source maps
-        //     }),
-        //     new OptimizeCSSAssetsPlugin({})
-        // ],
+        minimizer: [
+            new UglifyJsPlugin({
+              cache: true,
+              parallel: true,
+              sourceMap: true // set to true if you want JS source maps
+            }),
+            new OptimizeCSSAssetsPlugin({})
+        ],
         runtimeChunk: {
             name: "manifest"
         },
@@ -98,14 +102,14 @@ module.exports = {
                     priority: 20, // 权重要大于 libs 和 app 不然会被打包进 libs 或者 app
                     test: /[\/]node_modules[\/]antd[\/]/
                 }
-                // styles: {
-                //   name: 'styles',
-                //   test: /\.(scss|css)$/,
-                //   chunks: 'all',
-                //   minChunks: 1,
-                //   reuseExistingChunk: true,
-                //   enforce: true
-                // }
+                styles: {
+                  name: 'styles',
+                  test: /\.(scss|css)$/,
+                  chunks: 'all',
+                  minChunks: 1,
+                  reuseExistingChunk: true,
+                  enforce: true
+                }
             }
         }
     },
