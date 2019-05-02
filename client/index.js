@@ -1,19 +1,22 @@
 import React from 'react'
-import {render} from 'react-dom'
-import {Router, match, browserHistory} from 'react-router'
+import ReactDOM from 'react-dom'
+import { BrowserRouter as Router } from "react-router-dom";
 import {Provider} from 'react-redux'
-import routes from './routes'
+import App from './app'
+
 import configureStore from './common/store/configureStore'
 
-const store = configureStore(window.REDUX_STATE)
-
+const store = configureStore() //window.REDUX_STATE
 
 
 // match({history: browserHistory, routes}, (error, redirectLocation, renderProps) => {
-    render(
+    ReactDOM.hydrate(
         <Provider store={store}>
-            <Router {...renderProps}/>
-        </Provider>,
+            <Router>
+              <App />
+            </Router>
+        </Provider>
+        ,
         document.getElementById('root')
     )
 // })

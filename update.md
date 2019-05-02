@@ -70,3 +70,14 @@ export 'match' was not found in 'react-router
 yarn add @babel/plugin-syntax-dynamic-import
 
 (0 , _reactRouter.match) is not a function
+
+Invariant Violation: Router.Provider.render(): A valid React element (or null) must be returned. You may have returned undefined, an array or some other invalid object.
+```js
+   yarn add react react-dom react-redux
+   "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-redux": "^5.0.1",
+```
+>
+You should not use <Route component> and <Route children> in the same route; <Route component> will be ignored
+>

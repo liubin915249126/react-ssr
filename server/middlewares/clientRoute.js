@@ -1,9 +1,10 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {match, RouterContext,StaticRouter} from 'react-router'
+import { StaticRouter } from "react-router-dom";
 import {Provider} from 'react-redux'
-import routes from '../../client/routes'
+
 import configureStore from '../../client/common/store/configureStore'
+import App from '../../client/app'
 
 // const React = require('react')
 // const renderToString = require('react-dom/server')
@@ -15,24 +16,26 @@ import configureStore from '../../client/common/store/configureStore'
 
 const store = configureStore()
 
+
 async function clientRoute(ctx, next) {
     let _renderProps
+    const context = { };
+    // match({routes, location: ctx.url}, (error, redirectLocation, renderProps) => {
+    //     _renderProps = renderProps
+    // })
 
-    match({routes, location: ctx.url}, (error, redirectLocation, renderProps) => {
-        _renderProps = renderProps
-    })
-
-    if (_renderProps) {
+    if (true) {
         await ctx.render('index', {
             root: renderToString(
                 <Provider store={store}>
-                  <StaticRouter location={req.url} context={context}>
-                    <RouterContext {..._renderProps}/>
+                  <StaticRouter location={ctx.url} context={context}>
+                    <App />
                   </StaticRouter>
                 </Provider>
             ),
             state: store.getState()
         })
+        await next()
     } else {
         await next()
     }
