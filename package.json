@@ -34,7 +34,7 @@
     "koa-router": "^7.4.0",
     "koa-webpack-dev-middleware": "1.4.6",
     "koa-webpack-hot-middleware": "^1.0.1",
-    "react-dev-utils": "^5.0.1",
+    "react-dev-utils": "^5.0.2",
     "webpack": "^4.15.0",
     "webpack-cli": "^3.0.8"
   },
